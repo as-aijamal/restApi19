@@ -1,6 +1,6 @@
 package peaksoft.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.model.Group;
 import peaksoft.service.GroupService;
@@ -9,13 +9,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/groups")
+@RequiredArgsConstructor
 public class GroupApi {
     private final GroupService groupService;
-
-    @Autowired
-    public GroupApi(GroupService groupService) {
-        this.groupService = groupService;
-    }
 
     @PostMapping
     public Group saveGroup(@RequestBody Group group) {
@@ -43,7 +39,8 @@ public class GroupApi {
     }
 
     @PostMapping("/{id}")
-    public String assignStudentToGroup(@PathVariable Long id, @RequestParam Long studentId) {
+    public String assignStudentToGroup(@PathVariable Long id,
+                                       @RequestParam Long studentId) {
         return groupService.assignStudentToGroup(studentId, id);
     }
 
