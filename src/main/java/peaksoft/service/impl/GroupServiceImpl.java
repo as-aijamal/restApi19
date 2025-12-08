@@ -1,6 +1,7 @@
 package peaksoft.service.impl;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,10 @@ import java.util.NoSuchElementException;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final StudentRepository studentRepository;
-
-    @Autowired
-    public GroupServiceImpl(GroupRepository groupRepository, StudentRepository studentRepository) {
-        this.groupRepository = groupRepository;
-        this.studentRepository = studentRepository;
-    }
 
     @Override
     public Group saveGroup(Group group) {

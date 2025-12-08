@@ -8,10 +8,10 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "students")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class Student {
     @Id
     @GeneratedValue(
@@ -27,8 +27,8 @@ public class Student {
     private String lastName;
     private String email;
     private int age;
-    private boolean isBlocked;
     @ManyToOne
     private Group group;
+}
 
-    }
+
