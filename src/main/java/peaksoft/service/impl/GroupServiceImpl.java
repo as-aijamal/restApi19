@@ -2,16 +2,19 @@ package peaksoft.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.dto.SimpleResponse;
+import peaksoft.dto.groupDto.request.GroupRequest;
+import peaksoft.dto.groupDto.request.GroupRequestRecord;
+import peaksoft.dto.groupDto.response.GroupResponse;
 import peaksoft.model.Group;
 import peaksoft.model.Student;
 import peaksoft.repository.GroupRepository;
 import peaksoft.repository.StudentRepository;
 import peaksoft.service.GroupService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -23,42 +26,61 @@ public class GroupServiceImpl implements GroupService {
     private final StudentRepository studentRepository;
 
     @Override
-    public Group saveGroup(Group group) {
-        return groupRepository.save(group);
+    public SimpleResponse saveGroup(GroupRequestRecord groupRequest) {
+        Group group = new Group();
+        group.setGroupName(groupRequest.groupName());
+        group.setDescription(groupRequest.description());
+        group.setStarts(LocalDate.now());
+        group.setFinishes(groupRequest.finishes());
+        groupRepository.save(group);
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message(String.format("Group with id: %s is successfully saved", group.getId()))
+                .build();
     }
 
     @Override
-    public List<Group> getAllGroup() {
-        return groupRepository.findAll();
+    public List<GroupResponse> getAllGroup() {
+        return groupRepository.getAllGroups();
     }
 
     @Override
-    public Group getGroupById(Long id) {
-        return groupRepository.findById(id).orElseThrow(
+    public GroupResponse getGroupById(Long id) {
+        return groupRepository.getGroupById(id).orElseThrow(
                 () -> new NoSuchElementException(
                         "Group with id: " + id + " is not found"));
     }
 
     @Override
-    public Group updateGroup(Long id, Group group) {
-        Group oldGroup = groupRepository.findById(id).orElseThrow(
+    public SimpleResponse updateGroup(Long id, GroupRequest groupRequest) {
+        Group group = groupRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(
                         "Group with id: " + id + " is not found"));
-        oldGroup.setGroupName(group.getGroupName());
-        oldGroup.setDescription(group.getDescription());
-        oldGroup.setDateOfStart(group.getDateOfStart());
-        groupRepository.save(oldGroup);
-        return oldGroup;
+        group.setGroupName(groupRequest.getGroupName());
+        group.setDescription(groupRequest.getDescription());
+        group.setStarts(LocalDate.now());
+        group.setFinishes(groupRequest.getFinishes());
+        groupRepository.save(group);
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message(String.format("Group with id: %s is successfully updated", group.getId()))
+                .build();
     }
 
     @Override
-    public String deleteGroup(Long id) {
+    public SimpleResponse deleteGroup(Long id) {
         if (!groupRepository.existsById(id)) {
             throw new NoSuchElementException(
                     "Group with id: " + id + " is not found");
         }
         groupRepository.deleteById(id);
-        return "Group with id: " + id + " is deleted!";
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message(String.format("Group with id: %s is successfully deleted", id))
+                .build();
     }
 
     @Override
@@ -73,7 +95,7 @@ public class GroupServiceImpl implements GroupService {
 
         student.setGroup(group);
         group.getStudents().add(student);
-        return  SimpleResponse
+        return SimpleResponse
                 .builder()
                 .httpStatus(HttpStatus.OK)
                 .message("Student with id: " + studentId + " is assigned to group with id: " + groupId)

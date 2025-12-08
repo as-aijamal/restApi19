@@ -1,20 +1,23 @@
 package peaksoft.service;
 
 import peaksoft.dto.SimpleResponse;
+import peaksoft.dto.groupDto.request.GroupRequest;
+import peaksoft.dto.groupDto.request.GroupRequestRecord;
+import peaksoft.dto.groupDto.response.GroupResponse;
 import peaksoft.model.Group;
 
 import java.util.List;
 
 public interface GroupService {
-    Group saveGroup(Group group);
+    SimpleResponse saveGroup(GroupRequestRecord groupRequest);
 
-    List<Group> getAllGroup();
+    List<GroupResponse> getAllGroup();
 
-    Group getGroupById(Long id);
+    GroupResponse getGroupById(Long id);
 
-    Group updateGroup(Long id, Group group);
+    SimpleResponse updateGroup(Long id, GroupRequest groupRequest);
 
-    String deleteGroup(Long id);
+    SimpleResponse deleteGroup(Long id);
 
     SimpleResponse assignStudentToGroup(Long studentId, Long groupId);
 }

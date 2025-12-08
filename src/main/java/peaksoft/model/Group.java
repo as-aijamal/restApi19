@@ -31,7 +31,8 @@ public class Group {
     private String groupName;
     private String description;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private LocalDate dateOfStart;
+    private LocalDate starts;
+    private LocalDate finishes;
     @OneToMany(mappedBy = "group")
     private List<Student> students;
 }

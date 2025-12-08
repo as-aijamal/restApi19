@@ -3,6 +3,9 @@ package peaksoft.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.dto.SimpleResponse;
+import peaksoft.dto.groupDto.request.GroupRequest;
+import peaksoft.dto.groupDto.request.GroupRequestRecord;
+import peaksoft.dto.groupDto.response.GroupResponse;
 import peaksoft.model.Group;
 import peaksoft.service.GroupService;
 
@@ -14,30 +17,28 @@ import java.util.List;
 public class GroupApi {
     private final GroupService groupService;
 
-
-
     @PostMapping
-    public Group saveGroup(@RequestBody Group group) {
-        return groupService.saveGroup(group);
+    public SimpleResponse saveGroup(@RequestBody GroupRequestRecord groupRequest) {
+        return groupService.saveGroup(groupRequest);
     }
 
     @GetMapping
-    public List<Group> getAllGroups() {
+    public List<GroupResponse> getAllGroups() {
         return groupService.getAllGroup();
     }
 
     @GetMapping("/{id}")
-    public Group getById(@PathVariable Long id) {
+    public GroupResponse getById(@PathVariable Long id) {
         return groupService.getGroupById(id);
     }
 
     @PutMapping("/{id}")
-    public Group updateGroup(@PathVariable Long id, @RequestBody Group group) {
-        return groupService.updateGroup(id, group);
+    public SimpleResponse updateGroup(@PathVariable Long id, @RequestBody GroupRequest groupRequest) {
+        return groupService.updateGroup(id, groupRequest);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteGroup(@PathVariable Long id) {
+    public SimpleResponse deleteGroup(@PathVariable Long id) {
         return groupService.deleteGroup(id);
     }
 
