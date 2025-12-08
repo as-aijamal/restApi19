@@ -2,6 +2,7 @@ package peaksoft.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import peaksoft.dto.SimpleResponse;
 import peaksoft.model.Group;
 import peaksoft.service.GroupService;
 
@@ -43,7 +44,7 @@ public class GroupApi {
     }
 
     @PostMapping("/{id}")
-    public String assignStudentToGroup(@PathVariable Long id, @RequestParam Long studentId) {
+    public SimpleResponse assignStudentToGroup(@PathVariable Long id, @RequestParam Long studentId) {
         return groupService.assignStudentToGroup(studentId, id);
     }
 

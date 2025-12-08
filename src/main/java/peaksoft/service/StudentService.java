@@ -1,19 +1,23 @@
 package peaksoft.service;
 
+import peaksoft.dto.SimpleResponse;
+import peaksoft.dto.studentDto.request.StudentRequest;
+import peaksoft.dto.studentDto.response.StudentByIdResponse;
+import peaksoft.dto.studentDto.response.StudentResponse;
 import peaksoft.model.Student;
 
 import java.util.List;
 
 public interface StudentService {
-    Student saveStudent(Student student);
+    SimpleResponse saveStudent(StudentRequest studentRequest);
 
-    List<Student> getAllStudents();
+    List<StudentResponse> getAllStudents();
 
-    Student getStudentById(Long id);
+    StudentByIdResponse getStudentById(Long id);
 
-    Student updateStudent(Long id, Student student);
+    SimpleResponse updateStudent(Long id, StudentRequest studentRequest);
 
-    String deleteStudent(Long id);
+    SimpleResponse deleteStudent(Long id);
 
-    Student getStudentByEmail(String email);
+    StudentResponse getStudentByEmail(String email);
 }

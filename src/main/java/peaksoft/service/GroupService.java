@@ -1,5 +1,6 @@
 package peaksoft.service;
 
+import peaksoft.dto.SimpleResponse;
 import peaksoft.model.Group;
 
 import java.util.List;
@@ -15,5 +16,5 @@ public interface GroupService {
 
     String deleteGroup(Long id);
 
-    String assignStudentToGroup(Long studentId, Long groupId);
+    SimpleResponse assignStudentToGroup(Long studentId, Long groupId);
 }

@@ -2,7 +2,12 @@ package peaksoft.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import peaksoft.dto.SimpleResponse;
+import peaksoft.dto.studentDto.request.StudentRequest;
+import peaksoft.dto.studentDto.response.StudentByIdResponse;
+import peaksoft.dto.studentDto.response.StudentResponse;
 import peaksoft.model.Student;
 import peaksoft.repository.StudentRepository;
 import peaksoft.service.StudentService;
@@ -21,48 +26,77 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student saveStudent(Student student) {
-        return studentRepository.save(student);
+    public SimpleResponse saveStudent(StudentRequest studentRequest) {
+        Student student = new Student();
+        student.setFirstName(studentRequest.getFirstName());
+        student.setLastName(studentRequest.getLastName());
+        student.setEmail(studentRequest.getEmail());
+        student.setAge(studentRequest.getAge());
+        studentRepository.save(student);
+
+         return SimpleResponse
+                 .builder()
+                 .httpStatus(HttpStatus.OK)
+                 .message("Student saved successfully")
+                 .build();
     }
 
     @Override
-    public List<Student> getAllStudents() {
-        return studentRepository.findAll();
+    public List<StudentResponse> getAllStudents() {
+        return studentRepository.getAllStudent();
     }
 
     @Override
-    public Student getStudentById(Long id) {
-        return studentRepository.findById(id).orElseThrow(
+    public StudentByIdResponse getStudentById(Long id) {
+        Student student = studentRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(
                         "Student with id :" + id + " is not found"
                 ));
+
+
+        return StudentByIdResponse
+                .builder()
+                .id(student.getId())
+                .firstName(student.getFirstName())
+                .lastName(student.getLastName())
+                .email(student.getEmail())
+                .age(student.getAge())
+                .build();
     }
 
     @Override
-    public Student updateStudent(Long id, Student student) {
+    public SimpleResponse updateStudent(Long id, StudentRequest studentRequest) {
         Student oldStudent = studentRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(
                         "Student with id :" + id + " is not found"
                 ));
-        oldStudent.setFirstName(student.getFirstName());
-        oldStudent.setLastName(student.getLastName());
-        oldStudent.setEmail(student.getEmail());
-        oldStudent.setAge(student.getAge());
+        oldStudent.setFirstName(studentRequest.getFirstName());
+        oldStudent.setLastName(studentRequest.getLastName());
+        oldStudent.setEmail(studentRequest.getEmail());
+        oldStudent.setAge(studentRequest.getAge());
         studentRepository.save(oldStudent);
-        return oldStudent;
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Student updated successfully")
+                .build();
     }
 
     @Override
-    public String deleteStudent(Long id) {
+    public SimpleResponse deleteStudent(Long id) {
         if (!studentRepository.existsById(id)){
             throw new NoSuchElementException("Student with id :" + id + " is not found");
         }
         studentRepository.deleteById(id);
-        return "Student with id: "+id+" is successfully deleted";
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Student deleted successfully")
+                .build();
     }
 
     @Override
-    public Student getStudentByEmail(String email) {
+    public StudentResponse getStudentByEmail(String email) {
         return studentRepository.getStudentByEmail(email);
     }
 }

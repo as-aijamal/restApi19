@@ -2,7 +2,9 @@ package peaksoft.service.impl;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import peaksoft.dto.SimpleResponse;
 import peaksoft.model.Group;
 import peaksoft.model.Student;
 import peaksoft.repository.GroupRepository;
@@ -64,7 +66,7 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public String assignStudentToGroup(Long studentId, Long groupId) {
+    public SimpleResponse assignStudentToGroup(Long studentId, Long groupId) {
         Student student = studentRepository.findById(studentId).orElseThrow(
                 () -> new NoSuchElementException(
                         "Student with id :" + studentId + " is not found"));
@@ -75,6 +77,10 @@ public class GroupServiceImpl implements GroupService {
 
         student.setGroup(group);
         group.getStudents().add(student);
-        return "Successfully assigned!";
+        return  SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Student with id: " + studentId + " is assigned to group with id: " + groupId)
+                .build();
     }
 }
