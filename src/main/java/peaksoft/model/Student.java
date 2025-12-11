@@ -23,12 +23,15 @@ public class Student {
             allocationSize = 1
     )
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String email;
+    String firstName;
+    String lastName;
+    String email;
     private int age;
     @ManyToOne
     private Group group;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private User user;
 }
 
 

@@ -4,12 +4,15 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import peaksoft.dto.SimpleResponse;
 import peaksoft.dto.studentDto.request.StudentRequest;
 import peaksoft.dto.studentDto.response.StudentByIdResponse;
 import peaksoft.dto.studentDto.response.StudentResponse;
+import peaksoft.enums.Role;
 import peaksoft.model.Student;
+import peaksoft.model.User;
 import peaksoft.repository.StudentRepository;
 import peaksoft.service.StudentService;
 
@@ -21,16 +24,20 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public SimpleResponse saveStudent(StudentRequest studentRequest) {
+        User user = new User();
+        user.setFirstName(studentRequest.getFirstName());
+        user.setLastName(studentRequest.getLastName());
+        user.setEmail(studentRequest.getEmail());
+        user.setPassword(passwordEncoder.encode(studentRequest.getPassword()));
+        user.setRole(studentRequest.getRole());
         Student student = new Student();
-        student.setFirstName(studentRequest.getFirstName());
-        student.setLastName(studentRequest.getLastName());
-        student.setEmail(studentRequest.getEmail());
         student.setAge(studentRequest.getAge());
+        student.setUser(user);
         studentRepository.save(student);
-
          return SimpleResponse
                  .builder()
                  .httpStatus(HttpStatus.OK)
@@ -50,13 +57,12 @@ public class StudentServiceImpl implements StudentService {
                         "Student with id :" + id + " is not found"
                 ));
 
-
         return StudentByIdResponse
                 .builder()
                 .id(student.getId())
-                .firstName(student.getFirstName())
-                .lastName(student.getLastName())
-                .email(student.getEmail())
+//                .firstName(student.getFirstName())
+//                .lastName(student.getLastName())
+//                .email(student.getEmail())
                 .age(student.getAge())
                 .build();
     }
@@ -67,9 +73,9 @@ public class StudentServiceImpl implements StudentService {
                 () -> new NoSuchElementException(
                         "Student with id :" + id + " is not found"
                 ));
-        oldStudent.setFirstName(studentRequest.getFirstName());
-        oldStudent.setLastName(studentRequest.getLastName());
-        oldStudent.setEmail(studentRequest.getEmail());
+//        oldStudent.setFirstName(studentRequest.getFirstName());
+//        oldStudent.setLastName(studentRequest.getLastName());
+//        oldStudent.setEmail(studentRequest.getEmail());
         oldStudent.setAge(studentRequest.getAge());
         studentRepository.save(oldStudent);
         return SimpleResponse

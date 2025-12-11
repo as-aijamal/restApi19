@@ -9,5 +9,10 @@ spring:
     hibernate:
       ddl-auto: create
     show-sql: true
+
 server:
   port: 8080
+
+security:
+  secret:
+    key: java19

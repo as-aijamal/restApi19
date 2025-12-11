@@ -1,6 +1,7 @@
 package peaksoft.api;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.dto.SimpleResponse;
 import peaksoft.dto.studentDto.request.StudentRequest;
@@ -18,11 +19,13 @@ public class StudentApi {
     private final StudentService studentService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public SimpleResponse saveStudent(@RequestBody StudentRequest studentRequest) {
         return studentService.saveStudent(studentRequest);
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public List<StudentResponse> getAllStudents() {
         return studentService.getAllStudents();
     }
