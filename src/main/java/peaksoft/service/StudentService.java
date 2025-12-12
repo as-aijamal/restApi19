@@ -19,5 +19,5 @@ public interface StudentService {
 
     SimpleResponse deleteStudent(Long id);
 
-    StudentResponse getStudentByEmail(String email);
+//    StudentResponse getStudentByEmail(String email);
 }

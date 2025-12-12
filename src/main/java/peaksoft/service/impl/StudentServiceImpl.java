@@ -2,7 +2,6 @@ package peaksoft.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,10 +9,10 @@ import peaksoft.dto.SimpleResponse;
 import peaksoft.dto.studentDto.request.StudentRequest;
 import peaksoft.dto.studentDto.response.StudentByIdResponse;
 import peaksoft.dto.studentDto.response.StudentResponse;
-import peaksoft.enums.Role;
 import peaksoft.model.Student;
 import peaksoft.model.User;
 import peaksoft.repository.StudentRepository;
+import peaksoft.repository.UserRepository;
 import peaksoft.service.StudentService;
 
 import java.util.List;
@@ -25,6 +24,7 @@ import java.util.NoSuchElementException;
 public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
     @Override
     public SimpleResponse saveStudent(StudentRequest studentRequest) {
@@ -34,15 +34,17 @@ public class StudentServiceImpl implements StudentService {
         user.setEmail(studentRequest.getEmail());
         user.setPassword(passwordEncoder.encode(studentRequest.getPassword()));
         user.setRole(studentRequest.getRole());
+        userRepository.save(user);
         Student student = new Student();
         student.setAge(studentRequest.getAge());
+        student.setStudyFormat(studentRequest.getStudyFormat());
         student.setUser(user);
         studentRepository.save(student);
-         return SimpleResponse
-                 .builder()
-                 .httpStatus(HttpStatus.OK)
-                 .message("Student saved successfully")
-                 .build();
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Student saved successfully")
+                .build();
     }
 
     @Override
@@ -87,7 +89,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public SimpleResponse deleteStudent(Long id) {
-        if (!studentRepository.existsById(id)){
+        if (!studentRepository.existsById(id)) {
             throw new NoSuchElementException("Student with id :" + id + " is not found");
         }
         studentRepository.deleteById(id);
@@ -98,8 +100,8 @@ public class StudentServiceImpl implements StudentService {
                 .build();
     }
 
-    @Override
-    public StudentResponse getStudentByEmail(String email) {
-        return studentRepository.getStudentByEmail(email);
-    }
+//    @Override
+//    public StudentResponse getStudentByEmail(String email) {
+//        return studentRepository.getStudentByEmail(email);
+//    }
 }

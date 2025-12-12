@@ -3,6 +3,7 @@ package peaksoft.dto.studentDto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import peaksoft.enums.Role;
+import peaksoft.enums.StudyFormat;
 
 @Data
 @Builder
@@ -15,5 +16,6 @@ public class StudentRequest {
     String email;
     String password;
     int age;
+    StudyFormat studyFormat;
     Role role;
 }

@@ -2,7 +2,7 @@ package peaksoft.dto.studentDto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import peaksoft.model.Group;
+import peaksoft.enums.StudyFormat;
 
 @Data
 @NoArgsConstructor
@@ -11,7 +11,9 @@ import peaksoft.model.Group;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StudentResponse {
     Long id;
-    String fullName;
+    String firstName;
+    String lastName;
     String email;
-    String groupName;
+    int age;
+    StudyFormat studyFormat;
 }

@@ -15,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/students")
 @RequiredArgsConstructor
+
 public class StudentApi {
     private final StudentService studentService;
 
@@ -31,24 +32,27 @@ public class StudentApi {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public StudentByIdResponse getById(@PathVariable Long id) {
         return studentService.getStudentById(id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public SimpleResponse updateStudent(@PathVariable Long id, @RequestBody StudentRequest studentRequest) {
         return studentService.updateStudent(id, studentRequest);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public SimpleResponse deleteStudent(@PathVariable Long id) {
         return studentService.deleteStudent(id);
     }
 
-    @GetMapping("/getByEmail")
-    public StudentResponse getStudentByEmail(@RequestParam String email) {
-        return studentService.getStudentByEmail(email);
-    }
+//    @GetMapping("/getByEmail")
+//    public StudentResponse getStudentByEmail(@RequestParam String email) {
+//        return studentService.getStudentByEmail(email);
+//    }
 
 
 }

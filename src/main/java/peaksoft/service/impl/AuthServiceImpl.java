@@ -8,6 +8,7 @@ import peaksoft.config.jwt.JwtService;
 import peaksoft.dto.auth.AuthResponse;
 import peaksoft.dto.auth.SignInRequest;
 import peaksoft.dto.auth.SignUpRequest;
+import peaksoft.enums.Role;
 import peaksoft.model.User;
 import peaksoft.repository.UserRepository;
 import peaksoft.service.AuthService;
@@ -30,8 +31,8 @@ public class AuthServiceImpl implements AuthService {
                 .firstName(signUpRequest.firstName())
                 .lastName(signUpRequest.lastName())
                 .email(signUpRequest.email())
-                .password(signUpRequest.password())
-                .role(signUpRequest.role())
+                .password(passwordEncoder.encode(signUpRequest.password()))
+                .role(Role.ADMIN)
                 .build();
         userRepo.save(user);
 

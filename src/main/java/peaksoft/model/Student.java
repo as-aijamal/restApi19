@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import peaksoft.enums.StudyFormat;
 
 @Entity
 @Table(name = "students")
@@ -23,15 +24,15 @@ public class Student {
             allocationSize = 1
     )
     private Long id;
-    String firstName;
-    String lastName;
-    String email;
     private int age;
+    @Enumerated(EnumType.STRING)
+    private StudyFormat studyFormat;
+    @OneToOne(cascade = CascadeType.ALL)
+    private User user;
     @ManyToOne
     private Group group;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private User user;
+
 }
 
 

@@ -19,7 +19,14 @@ import java.util.List;
 @Builder
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_gen")
+    @SequenceGenerator(
+            name = "user_gen",
+            sequenceName = "user_seq",
+            allocationSize = 1
+    )
     Long id;
     String firstName;
     String lastName;
