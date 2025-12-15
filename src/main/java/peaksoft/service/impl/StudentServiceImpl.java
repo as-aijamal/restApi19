@@ -3,8 +3,12 @@ package peaksoft.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import peaksoft.config.jwt.JwtService;
 import peaksoft.dto.SimpleResponse;
 import peaksoft.dto.studentDto.request.StudentRequest;
 import peaksoft.dto.studentDto.response.StudentByIdResponse;
@@ -25,6 +29,8 @@ public class StudentServiceImpl implements StudentService {
     private final StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final JwtService jwtService;
+
 
     @Override
     public SimpleResponse saveStudent(StudentRequest studentRequest) {
@@ -71,15 +77,26 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public SimpleResponse updateStudent(Long id, StudentRequest studentRequest) {
+        User currentUser = jwtService.checkAuthentication();
+
         Student oldStudent = studentRepository.findById(id).orElseThrow(
                 () -> new NoSuchElementException(
                         "Student with id :" + id + " is not found"
                 ));
-//        oldStudent.setFirstName(studentRequest.getFirstName());
-//        oldStudent.setLastName(studentRequest.getLastName());
-//        oldStudent.setEmail(studentRequest.getEmail());
-        oldStudent.setAge(studentRequest.getAge());
-        studentRepository.save(oldStudent);
+        User user = userRepository.findById(oldStudent.getUser().getId()).orElseThrow(
+                () -> new NoSuchElementException(
+                        "User with id :" + id + " is not found"
+                ));
+        if (currentUser.getEmail().equals(user.getEmail())) {
+            user.setFirstName(studentRequest.getFirstName());
+            user.setLastName(studentRequest.getLastName());
+            user.setEmail(studentRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(studentRequest.getPassword()));
+            oldStudent.setAge(studentRequest.getAge());
+            oldStudent.setStudyFormat(studentRequest.getStudyFormat());
+            studentRepository.save(oldStudent);
+            userRepository.save(user);
+        }
         return SimpleResponse
                 .builder()
                 .httpStatus(HttpStatus.OK)
@@ -89,10 +106,12 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public SimpleResponse deleteStudent(Long id) {
-        if (!studentRepository.existsById(id)) {
-            throw new NoSuchElementException("Student with id :" + id + " is not found");
-        }
-        studentRepository.deleteById(id);
+        Student student = studentRepository.findById(id).orElseThrow(
+                () -> new NoSuchElementException(
+                        "Student with id :" + id + " is not found"
+                ));
+
+        studentRepository.delete(student);
         return SimpleResponse
                 .builder()
                 .httpStatus(HttpStatus.OK)

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import peaksoft.dto.auth.AuthResponse;
+import peaksoft.dto.auth.ProfileResponse;
 import peaksoft.dto.auth.SignInRequest;
 import peaksoft.dto.auth.SignUpRequest;
 import peaksoft.service.AuthService;
@@ -22,5 +23,10 @@ public class AuthApi {
     @PostMapping("/signIn")
     public AuthResponse signIn(@RequestBody SignInRequest signInRequest) {
         return authService.signIn(signInRequest);
+    }
+
+    @GetMapping
+    public ProfileResponse getProfile() {
+        return authService.getProfileToken();
     }
 }

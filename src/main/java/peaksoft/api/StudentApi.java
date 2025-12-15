@@ -38,7 +38,7 @@ public class StudentApi {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('STUDENT')")
     public SimpleResponse updateStudent(@PathVariable Long id, @RequestBody StudentRequest studentRequest) {
         return studentService.updateStudent(id, studentRequest);
     }

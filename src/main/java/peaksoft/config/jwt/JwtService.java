@@ -6,6 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import peaksoft.model.User;
 import peaksoft.repository.UserRepository;
@@ -39,5 +42,12 @@ public class JwtService {
         String email = decodedJwt.getClaim("email").asString();
         return userRepo.findUserByEmail(email).orElseThrow(()->
                 new RuntimeException(String.format("User with email %s not found", email)) );
+    }
+
+    public User checkAuthentication(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+       return userRepo.findUserByEmail(email).orElseThrow(() ->
+                new NullPointerException(String.format("User with email %s does not exists", email)));
     }
 }

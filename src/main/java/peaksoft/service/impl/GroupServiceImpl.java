@@ -25,6 +25,7 @@ public class GroupServiceImpl implements GroupService {
     private final GroupRepository groupRepository;
     private final StudentRepository studentRepository;
 
+
     @Override
     public SimpleResponse saveGroup(GroupRequestRecord groupRequest) {
         Group group = new Group();
